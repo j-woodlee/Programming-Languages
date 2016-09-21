@@ -1,9 +1,9 @@
-(* Name:
-   Email:
-   Student ID:
+(* Name: Jake Woodlee
+   Email: jwoodlee@lion.lmu.edu
+   Student ID: 962385088
 
    Others With Whom I Discussed Things:
-
+      Sasha Dmitrieva
    Other Resources I Consulted:
 
 *)
@@ -47,7 +47,7 @@ exception TODO;;
  *)
 
 let rec intsFromTo ((m,n) : int * int) : int list =
-  raise TODO
+    if m=n then [m] else m::intsFromTo(m+1,n)
 ;;
 
 (* Problem 2
@@ -63,7 +63,10 @@ let rec intsFromTo ((m,n) : int * int) : int list =
  *)
 
 let rec count ((v,l) : ('a * 'a list)) : int =
-  raise TODO
+    match l with
+    | [] -> 0
+    | hd::[] -> if hd=v then 1 else 0
+    | hd::tl -> if v=hd then 1+count(v,tl) else count(v,tl)
 ;;
 
 (* Problem 3
@@ -78,7 +81,10 @@ let rec count ((v,l) : ('a * 'a list)) : int =
  *)
 
 let rec append ((l1,l2) : ('a list * 'a list)) : 'a list =
-  raise TODO
+    match l1,l2 with
+    | [],[] -> []
+    | (hd::tl,l2) -> hd::append(tl,l2)
+    | ([],hd::tl) -> hd :: append([],tl)
 ;;
 
 (* Problem 4
@@ -91,7 +97,10 @@ let rec append ((l1,l2) : ('a list * 'a list)) : 'a list =
  *)
 
 let rec reverse (l : 'a list) : 'a list =
-  raise TODO
+  match l with
+  | [] -> []
+  | hd::[] -> l
+  | hd::tl -> append(reverse(tl), hd::[])
 ;;
 
 (* Problem 5
@@ -127,7 +136,10 @@ let rec reverse (l : 'a list) : 'a list =
 
 let fastRev (l : 'a list) : 'a list =
   let rec revHelper (remain, sofar) =
-    raise TODO
+    match (remain, sofar) with
+    | (hd::tl,[]) -> revHelper(tl,hd::sofar)
+    | ([],x) -> sofar
+    | (hd1::tl1,hd2::tl2) -> revHelper(tl1,hd1::sofar)
   in revHelper(l, [])
 ;;
 
@@ -148,9 +160,15 @@ let fastRev (l : 'a list) : 'a list =
 
 let rec insort (l : int list) : int list =
   let rec insert(e,l) =
-    raise TODO
+    match l with
+    | [] -> e::l
+    | hd::[] -> if hd > e then e::hd::[] else hd::e::[]
+    | hd::tl -> if hd > e then e::l else hd::insert(e,tl)
   in
-    raise TODO
+    match l with
+    | [] -> []
+    | hd::[] -> [hd]
+    | hd::tl -> insert(hd, insort tl) (*Somehow must pass a sorted tl*)
 ;;
 
 (* Problem 7
@@ -171,9 +189,12 @@ let rec insort (l : int list) : int list =
      - : int list * int list = ([1;2;5], [-3;-4])
  *)
 
-
 let rec splitBy ((f,l) : ('a -> bool) * ('a list)) : ('a list * 'a list) =
-  raise TODO
+    match l with
+    | [] -> ([],[])
+    | hd::[] -> if f(hd)=true then (hd::[],[]) else ([],hd::[])
+    | hd::tl -> let (x,y) = splitBy(f,tl) in
+    if f(hd)=true then (hd::x,y) else (x,hd::y)
 ;;
 
 
@@ -203,7 +224,9 @@ let rec splitBy ((f,l) : ('a -> bool) * ('a list)) : ('a list * 'a list) =
  *)
 
 let rec update ((l,n,f,default) : 'a list * int * ('a -> 'a) * 'a) =
-  raise TODO
+    match l with
+    | [] -> if n > 0 then default::update([],n-1,f,default) else [f(default)]
+    | hd::tl -> if n > 0 then hd::update(tl, n-1, f, default) else f(hd)::tl
 ;;
 
 (* Problem 9
@@ -233,7 +256,9 @@ let rec update ((l,n,f,default) : 'a list * int * ('a -> 'a) * 'a) =
    4, which are not returned by mod10 for any of its inputs.
 
  *)
-
-let rec partitionBy ((f,l) : ('a -> int) * ('a list)) : ('a list) list =
-  raise TODO
-;;
+ let rec partitionBy ((f,l) : ('a -> int) * ('a list)) : ('a list) list =
+   match l with
+   | [] -> []
+   | hd::[] -> update([],f(hd), (fun x -> hd::x), [])
+   | hd::tl -> update(partitionBy(f,tl), f(hd), (fun y -> hd::y), [])
+ ;;
