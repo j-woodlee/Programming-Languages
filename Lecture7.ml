@@ -20,7 +20,7 @@ Next tuesday: quiz 1.
 Last week: Higher-order functions.
 - Working with pairs.
 - patterns for working with lists.
-  - apply a function to eahc element of alist
+  - apply a function to each element of a list
   - select some of the elements of a list
   - combine all the elmeents into an aggregate value
 - demonstrate the power of first-class functions

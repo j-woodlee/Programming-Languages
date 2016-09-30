@@ -38,7 +38,7 @@ zip ([1;2;3], [4;5;6]) = [(1,4); (2,5); (3,6)]
 
 let rec zip args =
     match args with
-    | (_ , []) -> []
+    | (_, []) || (_,[]) -> []
     | ([], _) -> []
     | (h1::t1 , h2::t2) -> (h1,h2) :: zip (t1, t2)
 ;;
@@ -57,16 +57,26 @@ let rec unzip args =
     | [(x,y)] -> ([x],[y])
     | (x1,y1)::(x2,y2)::rest ->
       let (xs,ys) = unzip rest in (x1 :: x2 :: xs, y1 :: y2 :: ys)
-
+;;
 (*Simplify*)
 
+let foo x = unzip;;
+
+(*
+   int x = 5;
+   for (int x = 0; ...)
+
+   Object myThing = ...;;
+
+
+*)
 let rec unzip args =
     match args with
     | []      -> ([],[])
     | (x,y)::rest ->
       let (xs,ys) = unzip rest in
       (x :: xs, y :: ys)
-
+;;
 (*
 Index
 
@@ -98,7 +108,7 @@ let index (x,l) =
       match l with
       | [] -> -1
       | hd::_ when hd=x -> i
-      | _::tl if  -> helper (i+1, tl)
+      | _::tl if then else -> helper (i+1, tl)
   in helper (0, l)
 ;;
 

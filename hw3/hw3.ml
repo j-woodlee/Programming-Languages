@@ -1,6 +1,6 @@
-(* Name:
-   Email:
-   Student ID:
+(* Name: Jake Woodlee
+   Email: jwoodlee@lion.lmu.edu
+   Student ID: 962385088
 
    Others With Whom I Discussed Things:
 
@@ -50,8 +50,9 @@ exception TODO;;
 let rec combineAllLeft (f : 'a -> 'a -> 'a) (l : 'a list) : 'a =
   match l with
   | [x] -> x
-  | hd::tl -> let tlCombined = combineAll f tl in
-              f hd tlCombined
+  | hd1::hd2::tl -> let first = f hd1 hd2 in
+                    let next = first::tl in
+                    combineAllLeft f next
 ;;
 
 (* Problem 2
@@ -96,6 +97,9 @@ let rec contains (l : 'a list) (e : 'a) : bool =
    contains? If yes, give implementations of each in this comment. If
    not, explain why not.
 
+   No we need to change the function header of combineAll so that combineAll can return a different
+   type from what it takes in.
+
 
  *)
 
@@ -113,8 +117,11 @@ let rec contains (l : 'a list) (e : 'a) : bool =
 
  *)
 
-let rec combineAll (f : 'a -> 'a -> 'a) (r : 'a) (l : 'a list) : 'a =
-  raise TODO
+let rec combineAll f r l : 'a =
+  match l with
+  | [] -> r
+  | hd::tl -> let tlCombined = combineAll f r tl in
+              f hd tlCombined
 ;;
 
 (* Problem 6
@@ -138,6 +145,9 @@ let rec combineAll (f : 'a -> 'a -> 'a) (r : 'a) (l : 'a list) : 'a =
    new type that we couldn't do with the old type? Give your answer in
    this comment.
 
+   Answer: Yes. Using the second one lets you pass and return variables of differing types.  For example,
+   you can pass an int and return a boolean. Whereas before passing an int would require a return type of int.
+
  *)
 
 (* Problem 7
@@ -155,7 +165,7 @@ let rec combineAll (f : 'a -> 'a -> 'a) (r : 'a) (l : 'a list) : 'a =
  *)
 
 let length2 (l : 'a list) : int =
-  raise TODO
+  combineAll (fun x y -> 1+y) 0 l
 ;;
 
 (* Problem 8
@@ -172,7 +182,7 @@ let length2 (l : 'a list) : int =
  *)
 
 let contains2 (l : 'a list) (e : 'a) : bool =
-  raise TODO
+  combineAll (fun x y -> if x=e then true else y) false l
 ;;
 
 (* Problem 9
@@ -190,7 +200,7 @@ let contains2 (l : 'a list) (e : 'a) : bool =
  *)
 
 let map (f : 'a -> 'b) (l : 'a list) : 'b list =
-  raise TODO
+   combineAll (fun x y -> f x :: y) [] l
 ;;
 
 (* Problem 10
@@ -209,7 +219,7 @@ let map (f : 'a -> 'b) (l : 'a list) : 'b list =
  *)
 
 let filter (f : 'a -> bool) (l : 'a list) : 'a list =
-  raise TODO
+  combineAll (fun x y -> if f x then x::y else y) [] l
 ;;
 
 (* Problem 11
@@ -233,7 +243,11 @@ let filter (f : 'a -> bool) (l : 'a list) : 'a list =
  *)
 
 let rec combineAllLeft2 (f : 'b -> 'a -> 'b) (r : 'b) (l : 'a list) : 'b =
-  raise TODO
+  match l with
+  | [] -> r
+  | [x] -> f r x
+  | hd1::tl -> let first = f r hd1 in
+               combineAllLeft2 f first tl
 ;;
 
 (* Problem 12
@@ -248,5 +262,5 @@ let rec combineAllLeft2 (f : 'b -> 'a -> 'b) (r : 'b) (l : 'a list) : 'b =
  *)
 
 let fastRev (l : 'a list) : 'a list =
-  raise TODO
+    combineAllLeft2 (fun x y -> y::x) [] l
 ;;

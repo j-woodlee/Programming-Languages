@@ -25,6 +25,8 @@ let test nm f o =
 
 (* Problem 1: combineAllLeft *)
 test "combineAllLeft (-) [1;2;3]" (fun () -> combineAllLeft (-) [1;2;3]) (-4);;
+test "combineAllLeft (-) [1;2;3]" (fun () -> combineAllLeft (-) [1;2;3;4]) (-8);;
+test "combineAllLeft (-) [1;2;3]" (fun () -> combineAllLeft (-) [1;2;3;4]) (-8);;
 
 (* Problem 2: length *)
 test "length [1;2;3]" (fun() -> length [1;2;3]) 3;;
@@ -38,16 +40,22 @@ test "contains [1;2;3] 2" (fun() -> contains [1;2;3] 2) true;;
 test "contains [1;2;3] 0" (fun() -> contains [1;2;3] 0) false;;
 test "contains [1;2;3] 3" (fun() -> contains [1;2;3] 3) true;;
 test "contains [] 0" (fun() -> contains [] 0) false;;
-test "contains [6;6;6;6;6;6;6] 6" (fun() -> contains [6;6;6;6;6;6;6;6] 6) true;;
+test "contains [6;6;6;6;6;6;6;6] 6" (fun() -> contains [6;6;6;6;6;6;6;6] 6) true;;
 
 (* Problem 5: combineAll *)
 test "combineAll ( + ) 0 [1;2;3;4]" (fun() -> combineAll ( + ) 0 [1;2;3;4]) 10;;
 test "combineAll ( * ) 1 [1;2;3;4]" (fun() -> combineAll ( * ) 1 [1;2;3;4]) 24;;
 test "combineAll ( - ) 0 [1;2;3]"   (fun() -> combineAll ( - ) 0 [1;2;3])   2;;
+test "combineAll ( - ) 0 []"   (fun() -> combineAll ( - ) 0 [])   0;;
+test "combineAll ( - ) 0 [1;2;3]"   (fun() -> combineAll ( * ) 0 [1;2;3])   0;;
+test "combineAll ( - ) 1 [1;2;3]"   (fun() -> combineAll ( - ) 1 [1;2;3])   1;;
+
 
 (* Problem 7: length2 *)
 test "length2 []" (fun() -> length2 []) 0;;
 test "length2 [1;2;3]" (fun() -> length2 [1;2;3]) 3;;
+test "length2 [1;2;3;0]" (fun() -> length2 [1;2;3;0]) 4;;
+test "length2 [<a list of 5 strings>]" (fun() -> length2 ["";"asdf";"asdf";"pepe";"wapp"]) 5;;
 
 (* Problem 8: contains2 *)
 test "contains2 [] 5" (fun() -> contains2 [] 5) false;;
@@ -64,6 +72,16 @@ test "map (fun x -> x^\"!\") [\"ocaml\"; \"is\"; \"fun\"]"
 test "filter (fun x -> x > 0) [-1;2;-3;0;5]"
      (fun() -> filter (fun x -> x > 0) [-1;2;-3;0;5])
      [2;5];;
+test "filter (fun x -> x > 0) [-1;2;-3;0;5]"
+      (fun() -> filter (fun x -> x < 0) [-1;2;-3;0;5])
+      [-1;-3];;
+test "filter (fun x -> x > 0) [-1;2;-3;0;5]"
+     (fun() -> filter (fun x -> x = 0) [-1;2;-3;0;5])
+     [0];;
+test "filter (fun x -> x > 0) [-1;2;-3;0;5]"
+    (fun() -> filter (fun x -> x > 100) [-1;2;-3;0;5])
+    [];;
+
 
 (* Problem 11: combineAllLeft2 *)
 test "combineAllLeft2 ( - ) 0 []" (fun() -> combineAllLeft2 ( - ) 0 []) 0;;
@@ -74,3 +92,6 @@ test "combineAllLeft2 ( ^ ) \"\" [\"ocaml \"; \"is \"; \"fun\"]"
 
 (* Problem 12: fastRev *)
 test "fastRev [1;2;3] = [3;2;1]" (fun() -> fastRev [1;2;3]) [3;2;1];;
+test "fastRev [1;2;3] = [3;2;1]" (fun() -> fastRev [3;2;1]) [1;2;3];;
+test "fastRev [1;2;3] = [3;2;1]" (fun() -> fastRev []) [];;
+test "fastRev [1;2;3] = [3;2;1]" (fun() -> fastRev [888;888]) [888;888];;
