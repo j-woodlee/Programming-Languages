@@ -77,9 +77,9 @@ type op = Plus | Minus | Times | Eq | Gt;;
    |=====================+===============================================|
    | (fun x -> x + 1)    | Fun ("x", BinOp (Var "x", Plus, Int 1))       |
    |---------------------+-----------------------------------------------|
-   | f x y               | FunCall (FunCall (Var "f", Var "x"), Var "y") |
+   | f x y               | FunApp(FunApp (Var "f", Var "x"), Var "y")   |
    |---------------------+-----------------------------------------------|
-   | let x = 1 in x      | Let ("x", Int 1, Var "x")                     |
+   | let x = 1 in x      | LetIn("x", Int 1, Var "x")                    |
    |---------------------+-----------------------------------------------|
  *)
 
@@ -100,7 +100,7 @@ type expr = Int of int
 
 type value = VInt of int
            | VBool of bool
-           | VClosure of (string * expr * (string,value) dict);;
+           | VClosure of (string * expr * (string,value) dict);; (* why not put env here? *)
 
 type env = (string,value) dict;;
 
@@ -180,18 +180,42 @@ type env = (string,value) dict;;
  *)
 
 let evalOp (i : int) (o : op) (j : int) : value =
-  raise TODO
+  match o with
+  | Plus -> VInt (i+j)
+  | Minus -> VInt (i-j)
+  | Times -> VInt (i*j)
+  | Eq -> VBool (i=j)
+  | Gt -> VBool (i>j)
 ;;
 
 (* You should always evaluate subexpressions before matching on
    them. I've partially implemented one of the HW4 cases to give an
    example.
- *)
+    *)
+
 let rec eval (env : env) (e : expr) : value option =
   match e with
+  | Int x -> Some (VInt x)
+  | Bool x -> Some (VBool x)
+  | Var x -> get x env
   | BinOp(e1,o,e2) ->
      (match (eval env e1, eval env e2) with
       | (Some (VInt i), Some (VInt j)) -> Some (evalOp i o j)
       | _                              -> None)
-  | _ -> raise TODO
+  | IfThenElse(e1,e2,e3) -> (match eval env e1 with
+                             | Some(VBool x) -> if x then eval env e2 else eval env e3
+                             | _ -> None)
+  | LetIn(str,e1,e2) -> (match eval env e1 with
+                         | Some v -> let env' = put str v env in
+                                            eval env' e2
+                         | None -> None)
+  | Fun(str,e1) -> Some(VClosure(str,e1,env))
+  | FunApp(e1,e2) -> (match eval env e1 with
+                      | Some(VClosure(str,expr,enviro)) -> (match eval env e2 with
+                                                          | Some(v) -> let env' = put str v enviro in
+                                                                      eval env' expr
+                                                          | _ -> None
+                                                          )
+                      | _ -> None
+                      )
 ;;
