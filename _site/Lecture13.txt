@@ -1,0 +1,95 @@
+Last time: we began talking about ... types and type systems.
+  - static vs dynamic type checking.
+    pros/cons:
+      - static
+        - pros: early detection of errors (before you run the program).
+                managing complexity of large projects (code, teams, time)
+        - cons: often cryptic error messages. conservative. rejects
+                program that are actually type-error free. Can get in
+                your way. Can lead to code duplication
+      - dynamic
+        - pros: rapid prototyping, experimentation, small projects
+        - cons: dynamic type errors are hard to debug
+
+Strong vs Weak typing.
+  - strong: when you access a variable of some time, it *really*
+    has a value of that type.
+  - strongly typed means the language *never* allows us to:
+    - use a value of one type as if it were a value of another type.
+      e.g. adding two booleans
+           adding two strings
+           adding two binary trees
+           string concatenation of binary trees
+
+    - access/manipulate the internal representation (memory bits) of a
+      type. "enforcing each type's abstraction"
+
+    - OcaML is strongly typed.
+    - Python is strongly typed, even though it's dynamically typed.
+
+  - weakly typed means
+    - we can do some of the things prevented by a strongly typed language.
+    - allows some errors to go undetected
+      - after these errors occur, the program is in a "garbage state".
+        no guarantees about how it will run.
+    - Just C and C++ among main-stream languages.
+
+example.cpp
+
+- Strongly typed languages provide *memory safety*.
+  - can't read or write memory that was not allocated by the program.
+    - can't do out-of-bounds array accesses.
+    - a form of *buffer overruns* used by many hackers and viruses.
+    - these exploits target C/C++ code because of this vulnerability
+  - no *dangling pointers*
+    - dereference a pointer to a memory location that has been freed and possibly re-allocated (at a different type)
+  - no uninitialized variables.
+
+- Why is memory safety necessary for strong typing?
+  - prevents garbage values.
+  - if we read out-of-bounds from an int array, are we getting back an int? how do we know?
+
+- How does a language ensure lack of memory errors?
+  - a combination of things
+    - run-time array bounds checking
+    - hide the pointers.
+    - automatic garbage collection
+
+Both statically and dynamically typed languages do array bounds checking.
+  - Java, OCaml, Python, JS
+
+Why are C/C++ weakly typed (and not memory safe)?
+ - designed for systems programming (OS, other performance-critical sw)
+ - at the time they were invented, costs of memory safety were considered prohibitive
+ - so the static type checker does "best effort", but no run-time checks
+  - no run-time checks for type casts
+  - no array bounds checks
+- arguably still necessary today, particularly in certain constrained settings.
+
+Tradeoffs:
+  - strong type checking costs more at run time, but is *much* safer.
+    - popularized in the mainstream by Java, C#, scripting languages (JS and Python)
+    - everything but C/C++ are strongly typed
+
+WAT: automatic conversion.
+Strong typing: type safety. Weak typing: no type safety.
+
+JS and Ruby are strongly typed (type safety), but have lots of
+automatic conversion.
+
+- They suffer from *type error phobia*
+- dynamic type errors are painful. Hard to debug.
+- Instead, we just pretend they don't exist. By automatically converting
+  between types.
+
+JS has lots of auto conversion, to keep web pages running as long as possible.
+
+Python has less, to make debugging easier.
+
+OCaml does very little
+  - int_of_float, float_of_int
+  - why? to support type inference better.
+
+Scala: type safe (strongly typed), statically typed, type inference ,
+  and automatic conversion.
+  - user-defined automatic conversion
