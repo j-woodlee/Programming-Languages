@@ -238,9 +238,10 @@ class Num implements AExp {
   }
 
   public List<AInstr> compile() {
-    throw new RuntimeException("TODO");
+    List<AInstr> l = new ArrayList<AInstr>();
+    l.add(new Push(this.val));
+    return l;
   }
-
 }
 
 class BinOp implements AExp {
@@ -254,11 +255,15 @@ class BinOp implements AExp {
   }
 
   public Double eval() { //problem 1
-            return this.op.calculate(left.eval(), right.eval());
+      return this.op.calculate(left.eval(), right.eval());
   }
 
   public List<AInstr> compile() {
-    throw new RuntimeException("TODO");
+      List<AInstr> l = new ArrayList<AInstr>();
+      l.add(new Push(this.left.eval()));
+      l.add(new Push(this.right.eval()));
+      l.add(new Calculate(this.op));
+      return l;
   }
 }
 
@@ -285,7 +290,7 @@ class Push implements AInstr {
   }
 
   public void eval(Stack<Double> stack) {
-    throw new RuntimeException("TODO");
+    stack.push(this.val);
   }
 }
 
@@ -297,7 +302,9 @@ class Calculate implements AInstr {
   }
 
   public void eval(Stack<Double> stack) {
-    throw new RuntimeException("TODO");
+    Double val1 = stack.pop();//will remove variable storage if found to be unnecessary
+    Double val2 = stack.pop();
+    stack.push(this.op.calculate(val2,val1));
   }
 }
 
@@ -305,11 +312,15 @@ class Instrs {
     protected List<AInstr> instrs;
 
     public Instrs(List<AInstr> instrs) {
-	this.instrs = instrs;
+        this.instrs = instrs;
     }
 
-    public Double eval() {
-      throw new RuntimeException("TODO");
+    public Double eval() { //problem 2
+      Stack<Double> stck = new Stack<Double>();
+      for (AInstr instr : this.instrs) {
+          instr.eval(stck);
+      }
+      return stck.pop();
     }
 }
 
